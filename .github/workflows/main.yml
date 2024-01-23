@@ -1,0 +1,104 @@
+name: "[Main] Unity Actions 😎"
+
+on: 
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - src/
+        unityVersion:
+          - 2022.3.10f1
+        targetPlatform:
+          - Android # Build an Android player.
+    steps:
+      # Checkout (without LFS)
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      # Git LFS
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      # Cache
+      - uses: actions/cache@v2
+        with:
+          path: ${{ matrix.projectPath }}/Library
+          key:
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
+            hashFiles(matrix.projectPath) }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
+            Library-${{ matrix.projectPath }}-
+            Library-
+
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v3
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: ${{ matrix.projectPath }}
+          customImage: 'unityci/editor:2022.3.10f1-android-2' 
+          targetPlatform: ${{ matrix.targetPlatform }}
+          allowDirtyBuild: false
+          versioning: Tag
+          versionCode: androidVersionCode
+          androidAppBundle: false
+          androidKeystoreName: user.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }} 
+
+      #Output
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Main-Build-${{ matrix.targetPlatform}}
+          path: build/${{ matrix.targetPlatform}}
+          if-no-files-found: ignore
+      
+  # Deploy to itch.io
+  deployToItchIo:
+    runs-on: ubuntu-latest
+    name: Deploying Itch.io
+    needs: build
+    environment: Production
+    steps:
+      - uses: actions/download-artifact@v2.0.8
+        with:
+          name: Main-Build-WebGL
+          path: build/Main-Build-WebGL
+      - uses: KikimoraGames/itch-publish@v0.0.3
+        with:
+          butlerApiKey: ${{ secrets.BUTLER_API_KEY }}
+          gameData: ./build/Main-Build-WebGL
+          itchUsername: ${{ secrets.ITCH_USERNAME }}
+          itchGameId: ${{ secrets.ITCH_GAME_ID }}
+          buildChannel: android
+          buildNumber: ${{ needs.version.outputs.version_hash }}
