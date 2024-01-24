@@ -135,15 +135,18 @@ jobs:
           lfs: true
 
       # Create pull request
-      # https://github.com/marketplace/actions/github-pull-request-action
-      - name: Created pull request to release
-        uses: repo-sync/pull-request@v2
+      - name: Created pull request to develop
+        id: open_pr
+        uses: rematocorp/open-pull-request-action@v1
         with:
-          destination_branch: "release"
-          pr_title: "Pulling ${{ github.ref }} into release"
-          pr_body: |                                        # Full markdown support, requires pr_title to be set
-            :crown: *Automated PR to release branch*
+          github-token: ${{ secrets.GIT_TOKEN }}
+          from-branch: ${{ github.ref }}
+          to-branch: release
+          repository-owner: juniobiel
+          repository: axios
           
+      - name: Echo mergeable PR number
+        run: echo ${{ steps.open_pr.outputs.pull_number }}
 
     # testRunner:
     # name: Project tests
