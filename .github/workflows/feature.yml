@@ -97,7 +97,7 @@ jobs:
         id: open_pr
         uses: rematocorp/open-pull-request-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIT_TOKEN }}
           from-branch: ${{ github.ref }}
           to-branch: develop
           repository-owner: juniobiel
