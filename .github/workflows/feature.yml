@@ -94,7 +94,6 @@ jobs:
 
       # Create pull request
       - name: Created pull request to develop
-        uses: rematocorp/open-pull-request-action@v1
         id: open_pr
         uses: rematocorp/open-pull-request-action@v1
         with:
