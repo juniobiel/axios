@@ -94,7 +94,15 @@ jobs:
 
       # Create pull request
       - name: Created pull request to develop
-        uses: repo-sync/pull-request@v2
+        uses: rematocorp/open-pull-request-action@v1
+        id: open_pr
+        uses: rematocorp/open-pull-request-action@v1
         with:
-          destination_branch: "develop"
-          pr_title: "Pulling ${{ github.ref }} into develop"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          from-branch: ${{ github.ref }}
+          to-branch: develop
+          repository-owner: juniobiel
+          repository: axios
+          
+      - name: Echo mergeable PR number
+        run: echo ${{ steps.open_pr.outputs.pull_number }}
