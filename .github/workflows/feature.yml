@@ -95,5 +95,4 @@ jobs:
       # Create pull request
       - name: pull-request
         run: |
-          gh_pr_up() { gh pr create $* || gh pr edit $* }
-          gh_pr_up --base "develop" --title "PR ${{ github.ref }} to Develop" --body "Description"
+          gh pr create --base "develop" --title "PR ${{ github.ref }} to Develop" --body "Description"
