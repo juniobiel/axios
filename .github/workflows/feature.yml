@@ -7,80 +7,80 @@ on:
 
 jobs:
 
-  # free-disk-space:
-  #   runs-on: ubuntu-latest
-  #   steps:
+  free-disk-space:
+    runs-on: ubuntu-latest
+    steps:
 
-  #   - name: Free Disk Space (Ubuntu)
-  #     uses: jlumbroso/free-disk-space@main
-  #     with:
-  #       # this might remove tools that are actually needed,
-  #       # if set to "true" but frees about 6 GB
-  #       tool-cache: false
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: false
         
-  #       # all of these default to true, but feel free to set to
-  #       # "false" if necessary for your workflow
-  #       android: true
-  #       dotnet: true
-  #       haskell: true
-  #       large-packages: true
-  #       docker-images: true
-  #       swap-storage: true
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
 
-  # build:
-  #   name: Build for ${{ matrix.targetPlatform }}
-  #   runs-on: ubuntu-latest
-  #   needs: free-disk-space
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       projectPath:
-  #         - src/
-  #       unityVersion:
-  #         - 2023.1.16f1
-  #       targetPlatform:
-  #         - Android # Build an Android player.
-  #   steps:  
-  #     # Checkout (without LFS)
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #         lfs: true
+  build:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    needs: free-disk-space
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - src/
+        unityVersion:
+          - 2023.1.16f1
+        targetPlatform:
+          - Android # Build an Android player.
+    steps:  
+      # Checkout (without LFS)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
 
-  #     # Git LFS
-  #     - name: Create LFS file list
-  #       run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-  #     - name: Git LFS Pull
-  #       run: |
-  #         git lfs pull
-  #         git add .
-  #         git reset --hard
+      # Git LFS
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
 
-  #     # Build
-  #     - name: Build project
-  #       uses: game-ci/unity-builder@v4
-  #       env:
-  #         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  #         UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-  #         UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-  #       with:
-  #         customImage: 'unityci/editor:2023.2.6f1-android-3.0.1' 
-  #         projectPath: ${{ matrix.projectPath }}
-  #         targetPlatform: ${{ matrix.targetPlatform }}
-  #         allowDirtyBuild: true
-  #         versioning: Semantic
-  #         androidAppBundle: false
-  #         androidKeystoreName: appStore.keystore
-  #         androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-  #         androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
-  #         androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
-  #         androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }} 
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          customImage: 'unityci/editor:2023.2.6f1-android-3.0.1' 
+          projectPath: ${{ matrix.projectPath }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          allowDirtyBuild: true
+          versioning: Semantic
+          androidAppBundle: false
+          androidKeystoreName: appStore.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }} 
   
   pullToDevelop:
     name: Create pull request to develop
     runs-on: ubuntu-latest
-    #needs: build
+    needs: build
     steps:
       # Checkout (without LFS)
       - name: Checkout repository
