@@ -136,9 +136,11 @@ jobs:
 
       # Create pull request
       - name: pull-request
-        run: gh pr create -B release --title "Merge ${{ github.ref_name }} into release" --body 'Created by Github action'
+        run: |
+          gh pr create -B release --title "Merge ${{ github.ref_name }} into release" --body 'Created by Github action' || gh pr edit -B release --title "Merge ${{ github.ref_name }} into release" --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+
 
     # testRunner:
     # name: Project tests
