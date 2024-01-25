@@ -94,7 +94,6 @@ jobs:
 
       # Create pull request
       - name: pull-request
-        run: |
-          gh pr create --base "develop" --title "PR ${{ github.ref }} to Develop" --body "Description"
+        run: gh pr create -B develop --title 'Merge ${{ github.head_ref }} into develop' --body 'Created by Github action'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
