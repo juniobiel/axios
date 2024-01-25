@@ -96,3 +96,5 @@ jobs:
       - name: pull-request
         run: |
           gh pr create --base "develop" --title "PR ${{ github.ref }} to Develop" --body "Description"
+        env:
+          GH_TOKEN: ${{ github.token }}
