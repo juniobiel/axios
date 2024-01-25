@@ -135,18 +135,13 @@ jobs:
           lfs: true
 
       # Create pull request
+      #https://github.com/marketplace/actions/open-simple-pull-request
       - name: Created pull request to develop
-        id: open_pr
-        uses: rematocorp/open-pull-request-action@v1
+        uses: wandpsilva/open-simple-pr@v1
         with:
-          github-token: ${{ secrets.GIT_TOKEN }}
-          from-branch: ${{ github.ref }}
-          to-branch: release
-          repository-owner: juniobiel
-          repository: axios
-          
-      - name: Echo mergeable PR number
-        run: echo ${{ steps.open_pr.outputs.pull_number }}
+          target-branch: 'release'
+          title: "Enviando o código da ${{ github.ref }} para Release"
+          body: 'PR Criado'
 
     # testRunner:
     # name: Project tests
