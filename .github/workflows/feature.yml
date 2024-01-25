@@ -41,6 +41,9 @@ jobs:
         targetPlatform:
           - Android # Build an Android player.
     steps:
+      #free-disk
+      - uses: jlumbroso/free-disk-space@v1.3.0
+  
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -90,10 +93,15 @@ jobs:
           lfs: true
 
       # Create pull request
-      #https://github.com/marketplace/actions/open-simple-pull-request
+      #https://github.com/marketplace/actions/open-pull-request
       - name: Created pull request to develop
-        uses: wandpsilva/open-simple-pr@v1
+        uses: rematocorp/open-pull-request-action@v1
         with:
-          target-branch: 'develop'
-          title: "Enviando o código da ${{ github.ref }} para Develop"
-          body: 'PR Criado'
+          github-token: ${{ secrets.GIT_TOKEN }}
+          from-branch: ${{ github.ref }}
+          to-branch: develop
+          repository-owner: juniobiel
+          repository: axios
+          
+      - name: Echo mergeable PR number
+        run: echo ${{ steps.open_pr.outputs.pull_number }}
