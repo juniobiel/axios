@@ -21,6 +21,8 @@ jobs:
         targetPlatform:
           - Android # Build an Android player.
     steps:
+      #free-disk
+      - uses: jlumbroso/free-disk-space@v1.3.0
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -59,13 +61,13 @@ jobs:
 
       # Build
       - name: Build project
-        uses: game-ci/unity-builder@v3
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          customImage: 'unityci/editor:2022.3.10f1-android-2' 
+          customImage: 'unityci/editor:2023.2.6f1-android-3.0.1' 
           projectPath: ${{ matrix.projectPath }}
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: false
@@ -99,12 +101,10 @@ jobs:
           lfs: true
 
       # Create pull request
-      # https://github.com/marketplace/actions/github-pull-request-action
-      - name: Created pull request to main
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "main"
-          pr_title: "Pulling ${{ github.ref }} into main"
-          pr_body: |                                        # Full markdown support, requires pr_title to be set
-            :crown: *Automated PR to main branch*
+      - name: pull-request
+        run: |
+          gh pr create -B main --title "Merge ${{ github.ref_name }} into main" --body 'Created by Github action' || gh pr edit -B main --title "Merge ${{ github.ref_name }} into main" --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+
       

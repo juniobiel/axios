@@ -40,10 +40,7 @@ jobs:
           - 2023.1.16f1
         targetPlatform:
           - Android # Build an Android player.
-    steps:
-      #free-disk
-      - uses: jlumbroso/free-disk-space@v1.3.0
-  
+    steps:  
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -62,13 +59,13 @@ jobs:
 
       # Build
       - name: Build project
-        uses: game-ci/unity-builder@v3
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          customImage: 'unityci/editor:2023.1.16f1-android-2' 
+          customImage: 'unityci/editor:2023.2.6f1-android-3.0.1' 
           projectPath: ${{ matrix.projectPath }}
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: true
@@ -93,8 +90,8 @@ jobs:
           lfs: true
 
       # Create pull request
-      - name: Created pull request to develop
-        uses: repo-sync/pull-request@v2
-        with:
-          destination_branch: "develop"
-          pr_title: "Pulling ${{ github.ref }} into develop"
+      - name: pull-request
+        run: |
+          gh pr create -B develop --title "Merge ${{ github.ref_name }} into develop" --body 'Created by Github action' || gh pr edit -B develop --title "Merge ${{ github.ref_name }} into develop" --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

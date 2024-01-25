@@ -19,6 +19,8 @@ jobs:
         targetPlatform:
           - Android # Build an Android player.
     steps:
+      #free-disk
+      - uses: jlumbroso/free-disk-space@v1.3.0
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -57,14 +59,14 @@ jobs:
 
       # Build
       - name: Build project
-        uses: game-ci/unity-builder@v3
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           projectPath: ${{ matrix.projectPath }}
-          customImage: 'unityci/editor:2022.3.10f1-android-2' 
+          customImage: 'unityci/editor:2023.2.6f1-android-3.0.1' 
           targetPlatform: ${{ matrix.targetPlatform }}
           allowDirtyBuild: false
           versioning: Tag
