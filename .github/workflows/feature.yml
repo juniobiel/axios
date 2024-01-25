@@ -40,10 +40,7 @@ jobs:
           - 2023.1.16f1
         targetPlatform:
           - Android # Build an Android player.
-    steps:
-      #free-disk
-      - uses: jlumbroso/free-disk-space@v1.3.0
-  
+    steps:  
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v4
