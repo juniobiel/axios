@@ -115,14 +115,16 @@ jobs:
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'android internal' # Change to upload to a different lane
-      - name: Upload to Google Play Internal Draft
-        uses: maierj/fastlane-action@v2.0.1
-        with:
-          lane: 'android internal_progress' # Change to upload to a different lane
-      - name: Upload to Google Play Internal Completed
-        uses: maierj/fastlane-action@v2.0.1
-        with:
-          lane: 'android internal_completed' # Change to upload to a different lane
+      
+          # - name: Upload to Google Play Internal Draft
+      #   uses: maierj/fastlane-action@v2.0.1
+      #   with:
+      #     lane: 'android internal_progress' # Change to upload to a different lane
+      # - name: Upload to Google Play Internal Completed
+      #   uses: maierj/fastlane-action@v2.0.1
+      #   with:
+      #     lane: 'android internal_completed' # Change to upload to a different lane
+      
       - name: Cleanup to avoid storage limit
         if: always()
         uses: geekyeggo/delete-artifact@v1
