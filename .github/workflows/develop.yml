@@ -111,10 +111,14 @@ jobs:
         with:
           ruby-version: 2.7.2
           bundler-cache: true
-      - name: Upload to Google Play Internal
+      - name: Upload to Google Play Internal Draft
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'android internal' # Change to upload to a different lane
+      - name: Upload to Google Play Internal Completed
+        uses: maierj/fastlane-action@v2.0.1
+        with:
+          lane: 'android internal_completed' # Change to upload to a different lane
       - name: Cleanup to avoid storage limit
         if: always()
         uses: geekyeggo/delete-artifact@v1
