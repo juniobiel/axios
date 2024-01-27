@@ -111,10 +111,20 @@ jobs:
         with:
           ruby-version: 2.7.2
           bundler-cache: true
-      - name: Upload to Google Play Internal
+      - name: Upload to Google Play Internal Draft
         uses: maierj/fastlane-action@v2.0.1
         with:
           lane: 'android internal' # Change to upload to a different lane
+      
+          # - name: Upload to Google Play Internal Draft
+      #   uses: maierj/fastlane-action@v2.0.1
+      #   with:
+      #     lane: 'android internal_progress' # Change to upload to a different lane
+      # - name: Upload to Google Play Internal Completed
+      #   uses: maierj/fastlane-action@v2.0.1
+      #   with:
+      #     lane: 'android internal_completed' # Change to upload to a different lane
+      
       - name: Cleanup to avoid storage limit
         if: always()
         uses: geekyeggo/delete-artifact@v1
@@ -135,18 +145,12 @@ jobs:
           lfs: true
 
       # Create pull request
-      #https://github.com/marketplace/actions/open-pull-request
-      - name: Created pull request to develop
-        uses: rematocorp/open-pull-request-action@v1
-        with:
-          github-token: ${{ secrets.GIT_TOKEN }}
-          from-branch: ${{ github.ref }}
-          to-branch: release
-          repository-owner: juniobiel
-          repository: axios
-          
-      - name: Echo mergeable PR number
-        run: echo ${{ steps.open_pr.outputs.pull_number }}
+      - name: pull-request
+        run: |
+          gh pr create -B release --title "Merge ${{ github.ref_name }} into release" --body 'Created by Github action' || gh pr edit -B release --title "Merge ${{ github.ref_name }} into release" --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+
 
     # testRunner:
     # name: Project tests

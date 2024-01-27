@@ -40,10 +40,7 @@ jobs:
           - 2023.1.16f1
         targetPlatform:
           - Android # Build an Android player.
-    steps:
-      #free-disk
-      - uses: jlumbroso/free-disk-space@v1.3.0
-  
+    steps:  
       # Checkout (without LFS)
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -95,6 +92,6 @@ jobs:
       # Create pull request
       - name: pull-request
         run: |
-          gh pr create --base "develop" --title "PR ${{ github.ref }} to Develop" --body "Description"
+          gh pr create -B develop --title "Merge ${{ github.ref_name }} into develop" --body 'Created by Github action' || gh pr edit -B develop --title "Merge ${{ github.ref_name }} into develop" --body 'Created by Github action'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}

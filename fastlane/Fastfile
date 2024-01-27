@@ -9,8 +9,18 @@ platform :android do
     upload_to_play_store(track: 'alpha', release_status: 'completed', aab: "#{ENV['ANDROID_BUILD_FILE_PATH']}")
   end
 
-  desc "Upload a new Android internal version to Google Play"
+  desc "Upload a new Android internal draft version to Google Play"
   lane :internal do
     upload_to_play_store(track: 'internal', release_status: 'draft', aab: "#{ENV['ANDROID_BUILD_FILE_PATH']}")
   end
+
+  # desc "Upload a new Android internal draft version to Google Play"
+  # lane :internal_progress do
+  #   upload_to_play_store(track: 'internal', release_status: 'inProgress', aab: "#{ENV['ANDROID_BUILD_FILE_PATH']}")
+  # end
+
+  # desc "Upload a new Android internal draft version to Google Play"
+  # lane :internal_completed do
+  #   upload_to_play_store(track: 'internal', release_status: 'completed', aab: "#{ENV['ANDROID_BUILD_FILE_PATH']}")
+  # end
 end
