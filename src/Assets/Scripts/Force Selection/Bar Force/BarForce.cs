@@ -10,15 +10,16 @@ public class BarForce : MonoBehaviour
 
     private Image BarImage;
 
-    private bool CanForceIncrease;
     private bool CanStopBar;
 
     private float TimeCount;
+    private double ForceSelected;
+
+    public static event Action<double> OnForceSelected;
 
     private void OnEnable()
     {
         BarImage = GetComponent<Image>();
-        CanForceIncrease = true;
         CanStopBar = false;
     }
 
@@ -34,15 +35,9 @@ public class BarForce : MonoBehaviour
         if(TimeCount >= 0.01f && !CanStopBar)
         {
             if (BarImage.fillAmount >= 1)
-                CanForceIncrease = false;
+                BarImage.fillAmount = 0;
 
-            if (BarImage.fillAmount <= 0)
-                CanForceIncrease = true;
-
-            if(CanForceIncrease)
-                BarImage.fillAmount += 0.01f;
-            else
-                BarImage.fillAmount -= 0.01f;
+            BarImage.fillAmount += 0.025f;
 
             TimeCount -= TimeCount;
         }
@@ -52,13 +47,15 @@ public class BarForce : MonoBehaviour
 
     private string ForcePercentage()
     {
+        ForceSelected = Math.Round(BarImage.fillAmount * 100, 0);
 
-        return $"{ Math.Round(BarImage.fillAmount * 100, 0) }%";
+        return $"{ ForceSelected }%";
     }
 
 
     public void OnButtonPushForcePressed()
     {
         CanStopBar = true;
+        OnForceSelected(ForceSelected);
     }
 }
