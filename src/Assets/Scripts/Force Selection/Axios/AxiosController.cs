@@ -27,7 +27,7 @@ public class AxiosController : MonoBehaviour
     {
         if (CanPush)
         {
-            _rigidbody2D.AddForce(new Vector2(1, 1) * (int) ForceToPush, ForceMode2D.Impulse);
+            //_rigidbody2D.AddForce(new Vector2(1, 1) * (int) ForceToPush, ForceMode2D.Impulse);
             CanPush = false;
         }
     }

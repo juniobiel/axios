@@ -384,7 +384,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -6.8100586, y: -3.8599854, z: 0}
-  m_LocalScale: {x: 7.0507, y: 1, z: 1}
+  m_LocalScale: {x: 14.277669, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -499,7 +499,7 @@ Transform:
   m_GameObject: {fileID: 1393407421}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.03, y: -2.12, z: 0}
+  m_LocalPosition: {x: -2.26, y: -2.12, z: 0}
   m_LocalScale: {x: 2.1607, y: 2.1607, z: 2.1607}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -569,6 +569,7 @@ GameObject:
   - component: {fileID: 1921985428}
   - component: {fileID: 1921985427}
   - component: {fileID: 1921985426}
+  - component: {fileID: 1921985429}
   m_Layer: 0
   m_Name: Minotauro
   m_TagString: Untagged
@@ -661,12 +662,25 @@ Transform:
   m_GameObject: {fileID: 1921985425}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.800049, y: -1.17, z: 0}
+  m_LocalPosition: {x: -5.27, y: -3.54, z: 0}
   m_LocalScale: {x: 5.5962, y: 5.5962, z: 5.5962}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1921985429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921985425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295817eff1e7219499c1388898a38b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TimeToCharge: 2
 --- !u!224 &1946851325 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1730242732212587099, guid: 61b03aa7822fe8c499c0f3911b35048b, type: 3}
