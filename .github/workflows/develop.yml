@@ -90,7 +90,7 @@ jobs:
 
   deployToGooglePlay:
     name: Deploy to the Google Play Store
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: build
     env:
       GOOGLE_PLAY_KEY_FILE: ${{ secrets.GOOGLE_PLAY_KEY_FILE }}
