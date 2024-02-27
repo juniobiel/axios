@@ -29,7 +29,7 @@ jobs:
   build:
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: self-hosted
-    needs: free-disk-space
+    #needs: free-disk-space
     strategy:
       fail-fast: false
     steps:  
@@ -71,7 +71,7 @@ jobs:
   
   pullToDevelop:
     name: Create pull request to develop
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     steps:
       # Checkout (without LFS)
