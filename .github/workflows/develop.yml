@@ -12,13 +12,6 @@ jobs:
     environment: Development
     strategy:
       fail-fast: false
-      matrix:
-        projectPath:
-          - src/
-        unityVersion:
-          - 2023.2.10f1
-        targetPlatform:
-          - Android # Build an Android player.
     steps:
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
@@ -57,13 +50,13 @@ jobs:
       # Cache
       - uses: actions/cache@v3
         with:
-          path: ${{ matrix.projectPath }}/Library
+          path: src/Library
           key:
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{
-            hashFiles(matrix.projectPath) }}
+            Library-src-Android-${{
+            hashFiles(src) }}
           restore-keys: |
-            Library-${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-
-            Library-${{ matrix.projectPath }}-
+            Library-src-Android-
+            Library-src-
             Library-
 
       # Build
@@ -75,8 +68,8 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           customImage: 'unityci/editor:2023.2.10f1-android-3.0.1' 
-          projectPath: ${{ matrix.projectPath }}
-          targetPlatform: ${{ matrix.targetPlatform }}
+          projectPath: src
+          targetPlatform: Android
           allowDirtyBuild: false
           versioning: Semantic
           androidExportType: 'androidAppBundle'

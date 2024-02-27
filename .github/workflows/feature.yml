@@ -10,7 +10,6 @@ jobs:
   free-disk-space:
     runs-on: ubuntu-latest
     steps:
-
     - name: Free Disk Space (Ubuntu)
       uses: jlumbroso/free-disk-space@main
       with:
@@ -33,13 +32,6 @@ jobs:
     needs: free-disk-space
     strategy:
       fail-fast: false
-      matrix:
-        projectPath:
-          - src/
-        unityVersion:
-          - 2023.2.10f1
-        targetPlatform:
-          - Android # Build an Android player.
     steps:  
       # Checkout (without LFS)
       - name: Checkout repository
@@ -66,8 +58,8 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           customImage: 'unityci/editor:2023.2.10f1-android-3.0.1' 
-          projectPath: ${{ matrix.projectPath }}
-          targetPlatform: ${{ matrix.targetPlatform }}
+          projectPath: src
+          targetPlatform: Android
           allowDirtyBuild: true
           versioning: Semantic
           androidAppBundle: false
