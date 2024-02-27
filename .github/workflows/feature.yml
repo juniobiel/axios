@@ -27,7 +27,7 @@ jobs:
   #       swap-storage: true
 
   build:
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for Android
     runs-on: self-hosted
     #needs: free-disk-space
     strategy:

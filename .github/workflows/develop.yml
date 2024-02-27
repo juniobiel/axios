@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for Android
     runs-on: self-hosted
     environment: Development
     strategy:
