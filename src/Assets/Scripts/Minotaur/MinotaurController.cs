@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class MinotaurController : MonoBehaviour
@@ -11,6 +12,8 @@ public class MinotaurController : MonoBehaviour
     public float TimeToCharge;
     private bool CanLaunchAxios;
 
+
+    public static event Action<bool> OnAxiosLaunched;
 
     private void OnEnable()
     {
@@ -50,6 +53,7 @@ public class MinotaurController : MonoBehaviour
 
             if(TimerCounter >= TimeToCharge)
             {
+                OnAxiosLaunched(true);
                 Debug.Log("transição feita");
                 _animator.SetBool(ANIMATOR_PREPARE_VAR, false);
                 _animator.SetBool(ANIMATOR_LAUNCH_VAR, true);
