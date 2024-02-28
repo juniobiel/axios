@@ -52,8 +52,7 @@ jobs:
         with:
           path: src/Library
           key:
-            Library-src-Android-${{
-            hashFiles(src) }}
+            Library-src-Android-${{ hashFiles(src) }}
           restore-keys: |
             Library-src-Android-
             Library-src-
