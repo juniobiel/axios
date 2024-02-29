@@ -30,6 +30,7 @@ jobs:
       #     swap-storage: true
       #     lfs: true
 
+
       # Git LFS
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
@@ -52,7 +53,7 @@ jobs:
         with:
           path: src/Library
           key:
-            Library-src-Android-${{ hashFiles(src) }}
+            Library-src-Android-${{ hashFiles('src') }}
           restore-keys: |
             Library-src-Android-
             Library-src-
