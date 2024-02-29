@@ -30,6 +30,12 @@ jobs:
       #     swap-storage: true
       #     lfs: true
 
+      # Checkout (without LFS)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
 
       # Git LFS
       - name: Create LFS file list
