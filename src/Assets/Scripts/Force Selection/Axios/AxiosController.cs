@@ -14,6 +14,8 @@ public class AxiosController : MonoBehaviour
     private Animator _animator;
     private Rigidbody2D _rigidbody2D;
 
+    private Vector2 _velocityBuffer = Vector2.zero;
+
     private void OnEnable()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -47,11 +49,30 @@ public class AxiosController : MonoBehaviour
         _animator.SetBool(ANIMATOR_HITGROUND_VAR, false);
     }
 
-    void Update()
+    private void Update()
     {
-        if (HasBeenLaunched)
+        if (!HasBeenLaunched) return;
+        if (_velocityBuffer.y >= 0f && _rigidbody2D.velocity.y < 0f)
         {
-            // more stuff here later
+            _animator.SetBool(ANIMATOR_LAUNCH_VAR, false);
+            _animator.SetBool(ANIMATOR_FALL_VAR, true);
+        }
+        if (_velocityBuffer.y <= 0f && _rigidbody2D.velocity.y > 0f)
+        {
+            _animator.SetBool(ANIMATOR_LAUNCH_VAR, true);
+            _animator.SetBool(ANIMATOR_FALL_VAR, false);
+        }
+        _velocityBuffer = _rigidbody2D.velocity;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Colisao");
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            Debug.Log("Colisao com chao");
+            _rigidbody2D.velocity = Vector2.zero;
+            _animator.SetBool(ANIMATOR_HITGROUND_VAR, true);
         }
     }
 }
