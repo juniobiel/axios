@@ -49,12 +49,9 @@ public class MinotaurController : MonoBehaviour
         {
             TimerCounter += Time.deltaTime;
 
-            Debug.Log(TimerCounter);
-
             if(TimerCounter >= TimeToCharge)
             {
                 OnAxiosLaunched(true);
-                Debug.Log("transição feita");
                 _animator.SetBool(ANIMATOR_PREPARE_VAR, false);
                 _animator.SetBool(ANIMATOR_LAUNCH_VAR, true);
                 CanLaunchAxios = false;

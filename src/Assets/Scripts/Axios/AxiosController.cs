@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using Assets.Scripts.Scene_Manager;
 
 public class AxiosController : MonoBehaviour
 {
@@ -25,6 +25,12 @@ public class AxiosController : MonoBehaviour
 
         BarForce.OnForceSelected += BarForce_OnForceSelected;
         MinotaurController.OnAxiosLaunched += MinotaurController_OnAxiosLaunched;
+    }
+
+    private void OnDisable()
+    {
+        BarForce.OnForceSelected -= BarForce_OnForceSelected;
+        MinotaurController.OnAxiosLaunched -= MinotaurController_OnAxiosLaunched;
     }
 
     private void MinotaurController_OnAxiosLaunched(bool obj)
@@ -67,12 +73,13 @@ public class AxiosController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Colisao");
+        
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("Colisao com chao");
             _rigidbody2D.velocity = Vector2.zero;
             _animator.SetBool(ANIMATOR_HITGROUND_VAR, true);
+            
+            StartCoroutine(SceneManagerObject.GameOverSceneOpen());
         }
     }
 }
