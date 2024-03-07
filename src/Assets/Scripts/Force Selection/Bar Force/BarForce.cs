@@ -1,21 +1,21 @@
 using System;
-using TMPro;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BarForce : MonoBehaviour
 {
-    [SerializeField]
-    private TMP_Text PercentageText;
-
     private Image BarImage;
 
     private bool CanStopBar;
 
     private float TimeCount;
-    private double ForceSelected;
+    private int ForceSelected;
 
     public static event Action<double> OnForceSelected;
+
+    [SerializeField]
+    private GameObject BarForceObject;
 
     private void OnEnable()
     {
@@ -28,7 +28,7 @@ public class BarForce : MonoBehaviour
         TimeCount = 0;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         TimeCount += Time.deltaTime;
 
@@ -41,21 +41,23 @@ public class BarForce : MonoBehaviour
 
             TimeCount -= TimeCount;
         }
-
-        PercentageText.text = ForcePercentage();
     }
 
-    private string ForcePercentage()
+    private int ForcePercentage()
     {
-        ForceSelected = Math.Round(BarImage.fillAmount * 100, 0);
-
-        return $"{ ForceSelected }%";
+        ForceSelected = (int)Math.Round(BarImage.fillAmount * 100, 0);
+        return ForceSelected;
     }
-
-
     public void OnButtonPushForcePressed()
     {
         CanStopBar = true;
-        OnForceSelected(ForceSelected);
+        OnForceSelected(ForcePercentage());
+        StartCoroutine(WaitToDestroyBarForce(1.5f));
+    }
+
+    IEnumerator WaitToDestroyBarForce(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(BarForceObject);
     }
 }
