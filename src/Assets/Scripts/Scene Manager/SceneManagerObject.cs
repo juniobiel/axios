@@ -8,8 +8,10 @@ namespace Assets.Scripts.Scene_Manager
     {
         public static IEnumerator GameOverSceneOpen()
         {
+            yield return new WaitForSeconds(1.5f);
+            
             var sceneLoading = SceneManager.LoadSceneAsync("GameOver");
-        
+            
             while(!sceneLoading.isDone)
             {
                 yield return null;
