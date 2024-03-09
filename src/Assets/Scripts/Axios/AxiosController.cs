@@ -1,5 +1,6 @@
 using UnityEngine;
 using Assets.Scripts.Scene_Manager;
+using System.Collections;
 
 public class AxiosController : MonoBehaviour
 {
@@ -71,14 +72,15 @@ public class AxiosController : MonoBehaviour
         _velocityBuffer = _rigidbody2D.velocity;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private IEnumerator OnCollisionEnter2D(Collision2D collision)
     {
-        
         if (collision.gameObject.CompareTag("Ground"))
         {
             _rigidbody2D.velocity = Vector2.zero;
             _animator.SetBool(ANIMATOR_HITGROUND_VAR, true);
-            
+
+            yield return new WaitForSeconds(1.5f);
+
             StartCoroutine(SceneManagerObject.GameOverSceneOpen());
         }
     }
