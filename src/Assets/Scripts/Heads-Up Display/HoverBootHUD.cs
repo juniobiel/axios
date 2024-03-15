@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class HoverBootHUD : MonoBehaviour
 {
+    //TODO: Remover esses textos que são de teste
     private const string SPEED_TEXT_PREFIX = "SPEED";
     private const string HOVER_TEXT_PREFIX = "HOVER";
     private string HOVER_ON_TEXT = "<color=#00CC00>ON</color>";

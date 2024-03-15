@@ -11,9 +11,8 @@ namespace Assets.Scripts.Scene_Manager
             var sceneLoading = SceneManager.LoadSceneAsync("GameOver");
             
             while(!sceneLoading.isDone)
-            {
                 yield return null;
-            }
+            
         }
 
         public static IEnumerator PrototypeSceneOpen()
@@ -21,9 +20,8 @@ namespace Assets.Scripts.Scene_Manager
             var sceneLoading = SceneManager.LoadSceneAsync("Launching Prototype");
 
             while (!sceneLoading.isDone)
-            {
                 yield return null;
-            }
+            
         }
     }
 }
