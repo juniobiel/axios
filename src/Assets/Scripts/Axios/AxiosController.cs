@@ -1,6 +1,7 @@
 using UnityEngine;
 using Assets.Scripts.Scene_Manager;
 using System.Collections;
+using System.Runtime.Remoting.Messaging;
 
 public class AxiosController : MonoBehaviour
 {
@@ -15,7 +16,18 @@ public class AxiosController : MonoBehaviour
     private Animator _animator;
     private Rigidbody2D _rigidbody2D;
 
+    private Vector2 _axiosVelocity;
     private Vector2 _velocityBuffer = Vector2.zero;
+    public Vector2 VelocityBuffer { get => _velocityBuffer; }
+
+    private bool _hoverBootPressed;
+    public bool HoverBootPressed { get => _hoverBootPressed; }
+    public float HoverBootFallSpeed = 10f;
+    private float _hoverBootStamina = 1f;
+    public float HoverBootStamina { get => _hoverBootStamina; }
+
+    private const float HoverBootUseRate = 5f; // how long it takes to deplete the whole bar, in seconds
+    private const float HoverBootRechargeRate = 10f; // how long it takes to rechare the whole bar, in seconds
 
     private void OnEnable()
     {
@@ -59,17 +71,57 @@ public class AxiosController : MonoBehaviour
     private void Update()
     {
         if (!HasBeenLaunched) return;
-        if (_velocityBuffer.y >= 0f && _rigidbody2D.velocity.y < 0f)
+        
+        TouchInputHandler();
+
+        // change animation sometime after started falling
+        _axiosVelocity = _rigidbody2D.velocity;
+        if (_velocityBuffer.y >= 0f && _axiosVelocity.y < 0f)
         {
             _animator.SetBool(ANIMATOR_LAUNCH_VAR, false);
             _animator.SetBool(ANIMATOR_FALL_VAR, true);
         }
-        if (_velocityBuffer.y <= 0f && _rigidbody2D.velocity.y > 0f)
+        if (_velocityBuffer.y <= 0f && _axiosVelocity.y > 0f)
         {
             _animator.SetBool(ANIMATOR_LAUNCH_VAR, true);
             _animator.SetBool(ANIMATOR_FALL_VAR, false);
         }
-        _velocityBuffer = _rigidbody2D.velocity;
+
+        HoverBootHandler();
+
+        _rigidbody2D.velocity = _axiosVelocity;
+        _velocityBuffer = _axiosVelocity;
+    }
+
+    private void HoverBootHandler()
+    {
+        if (_hoverBootStamina > 0f && _hoverBootPressed && _axiosVelocity.y <= -HoverBootFallSpeed)
+        {
+            _axiosVelocity.y = -HoverBootFallSpeed;
+            _hoverBootStamina -= Time.deltaTime / HoverBootUseRate;
+            if (_hoverBootStamina < 0) _hoverBootStamina = 0; // cap
+            return;
+        }
+
+        if (!_hoverBootPressed && _hoverBootStamina < 1f)
+        {
+            _hoverBootStamina += Time.deltaTime / HoverBootRechargeRate;
+            if (_hoverBootStamina > 1f) _hoverBootStamina = 1f; // cap
+        }
+    }
+
+    private void TouchInputHandler()
+    {
+        _hoverBootPressed = false;
+        
+        if (Input.GetKey(KeyCode.Mouse0) && Input.mousePosition.x > Screen.width / 2) _hoverBootPressed = true; // placeholder
+        
+        if (Input.touchCount <= 0) return;
+        foreach (Touch currentTouch in Input.touches)
+        {
+            if (currentTouch.position.x > Screen.width / 2) _hoverBootPressed = true; // placeholder
+        }
+        
     }
 
     private IEnumerator OnCollisionEnter2D(Collision2D collision)
