@@ -1,7 +1,7 @@
 using UnityEngine;
 using Assets.Scripts.Scene_Manager;
 using System.Collections;
-using System.Runtime.Remoting.Messaging;
+using Assets.Scripts.Utils;
 
 public class AxiosController : MonoBehaviour
 {
@@ -17,14 +17,14 @@ public class AxiosController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
 
     private Vector2 _axiosVelocity;
-    private Vector2 _velocityBuffer = Vector2.zero;
-    public Vector2 VelocityBuffer { get => _velocityBuffer; }
 
-    private bool _hoverBootPressed;
-    public bool HoverBootPressed { get => _hoverBootPressed; }
+    public Vector2 VelocityBuffer { private set; get; }
+
+    public bool HoverBootPressed { private set; get; }
+    
     public float HoverBootFallSpeed = 10f;
-    private float _hoverBootStamina = 1f;
-    public float HoverBootStamina { get => _hoverBootStamina; }
+
+    public float HoverBootStamina { private set; get; }
 
     private const float HoverBootUseRate = 5f; // how long it takes to deplete the whole bar, in seconds
     private const float HoverBootRechargeRate = 10f; // how long it takes to rechare the whole bar, in seconds
@@ -33,8 +33,6 @@ public class AxiosController : MonoBehaviour
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
-
-        HasBeenLaunched = false;
 
         BarForce.OnForceSelected += BarForce_OnForceSelected;
         MinotaurController.OnAxiosLaunched += MinotaurController_OnAxiosLaunched;
@@ -66,60 +64,85 @@ public class AxiosController : MonoBehaviour
         _animator.SetBool(ANIMATOR_LAUNCH_VAR, false);
         _animator.SetBool(ANIMATOR_FALL_VAR, false);
         _animator.SetBool(ANIMATOR_HITGROUND_VAR, false);
+        
+        VelocityBuffer = Vector2.zero;
+        HasBeenLaunched = false;
+
     }
 
     private void Update()
     {
         if (!HasBeenLaunched) return;
-        
+
         TouchInputHandler();
 
-        // change animation sometime after started falling
+        //change animation sometime after started falling
         _axiosVelocity = _rigidbody2D.velocity;
-        if (_velocityBuffer.y >= 0f && _axiosVelocity.y < 0f)
+        
+        //TODO: Incluir as animações de planagem
+        PlayerAnimation();
+
+        HoverBootHandler();
+
+        //_rigidbody2D.velocity = _axiosVelocity;
+
+        VelocityBuffer = _axiosVelocity;
+    }
+
+    /// <summary>
+    /// Controls all Player Animation States
+    /// </summary>
+    private void PlayerAnimation()
+    {
+        if (VelocityBuffer.y >= 0f && _axiosVelocity.y < 0f)
         {
             _animator.SetBool(ANIMATOR_LAUNCH_VAR, false);
             _animator.SetBool(ANIMATOR_FALL_VAR, true);
         }
-        if (_velocityBuffer.y <= 0f && _axiosVelocity.y > 0f)
+
+        if (VelocityBuffer.y <= 0f && _axiosVelocity.y > 0f)
         {
             _animator.SetBool(ANIMATOR_LAUNCH_VAR, true);
             _animator.SetBool(ANIMATOR_FALL_VAR, false);
         }
-
-        HoverBootHandler();
-
-        _rigidbody2D.velocity = _axiosVelocity;
-        _velocityBuffer = _axiosVelocity;
     }
 
     private void HoverBootHandler()
     {
-        if (_hoverBootStamina > 0f && _hoverBootPressed && _axiosVelocity.y <= -HoverBootFallSpeed)
+        if (HoverBootStamina > 0f && HoverBootPressed)
         {
-            _axiosVelocity.y = -HoverBootFallSpeed;
-            _hoverBootStamina -= Time.deltaTime / HoverBootUseRate;
-            if (_hoverBootStamina < 0) _hoverBootStamina = 0; // cap
+
+            _rigidbody2D.AddForce(Vector2.one * 1.5f);
+
+            HoverBootStamina -= Utility.ConsumeRateBySeconds(HoverBootUseRate);
+
+            if (HoverBootStamina < 0)
+                HoverBootStamina = 0; // cap
+
             return;
         }
 
-        if (!_hoverBootPressed && _hoverBootStamina < 1f)
+        if (!HoverBootPressed && HoverBootStamina < 1f)
         {
-            _hoverBootStamina += Time.deltaTime / HoverBootRechargeRate;
-            if (_hoverBootStamina > 1f) _hoverBootStamina = 1f; // cap
+            HoverBootStamina += Utility.ConsumeRateBySeconds(HoverBootRechargeRate);
+
+            if (HoverBootStamina > 1f)
+                HoverBootStamina = 1f; // cap
         }
     }
 
+    //TODO: Refazer utilizando o novo input system orientado a eventos.
     private void TouchInputHandler()
     {
-        _hoverBootPressed = false;
+        HoverBootPressed = false;
         
-        if (Input.GetKey(KeyCode.Mouse0) && Input.mousePosition.x > Screen.width / 2) _hoverBootPressed = true; // placeholder
+        if (Input.GetKey(KeyCode.Mouse0) && Input.mousePosition.x > Screen.width / 2) HoverBootPressed = true; // placeholder
         
         if (Input.touchCount <= 0) return;
+        
         foreach (Touch currentTouch in Input.touches)
         {
-            if (currentTouch.position.x > Screen.width / 2) _hoverBootPressed = true; // placeholder
+            if (currentTouch.position.x > Screen.width / 2) HoverBootPressed = true; // placeholder
         }
         
     }
